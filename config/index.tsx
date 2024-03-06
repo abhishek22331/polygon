@@ -4,7 +4,7 @@ import { cookieStorage, createStorage } from 'wagmi'
 import { mainnet, sepolia, polygonMumbai } from 'wagmi/chains'
 
 // Get projectId at https://cloud.walletconnect.com
-export const projectId = "6ce960a77b3c0f41029edc0d785b4f2d"
+export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
 
 if (!projectId) throw new Error('Project ID is not defined')
 

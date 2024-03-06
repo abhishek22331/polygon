@@ -17,7 +17,27 @@ export default function Home() {
   const { open } = useWeb3Modal();
   const { address } = useAccount();
   const [targetPrice, setTargetPrice] = useState(null);
-  
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [input1, setInput1] = useState("");
+  const [input2, setInput2] = useState("");
+
+  const openModal = () => {
+    setIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
+  };
+
+  const handleInputChange1 = (e: any) => {
+    setInput1(e.target.value);
+  };
+
+  const handleInputChange2 = (e: any) => {
+    setInput2(e.target.value);
+  };
+
   const result = useReadContract({
     abi: ABI,
     address: "0xfCE738C9C06180B14A0E7668CF3d616F95Ac4d07",
@@ -176,7 +196,10 @@ export default function Home() {
                 <h1>Public</h1>
               </div>
             </div>
-            <button className="relative button inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800">
+            <button
+              onClick={openModal}
+              className="relative button inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
+            >
               <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
                 Buy
               </span>
@@ -184,6 +207,33 @@ export default function Home() {
           </div>
         </div>
       </main>
+      {isOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <span className="close-button" onClick={closeModal}>
+              &times;
+            </span>
+            <h2>Modal Title</h2>
+            <div>
+              <input
+                type="text"
+                value={input1}
+                onChange={handleInputChange1}
+                placeholder="Input 1"
+              />
+            </div>
+            <div>
+              <input
+                type="text"
+                value={input2}
+                onChange={handleInputChange2}
+                placeholder="Input 2"
+              />
+            </div>
+            <button onClick={closeModal}>Close Modal</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
