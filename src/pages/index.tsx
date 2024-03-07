@@ -11,7 +11,12 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 const inter = Inter({ subsets: ["latin"] });
 import ABI from "../../abi/abi.json";
-import { useAccount, useReadContract, useTransactionConfirmations, useWriteContract } from "wagmi";
+import {
+  useAccount,
+  useReadContract,
+  useTransactionConfirmations,
+  useWriteContract,
+} from "wagmi";
 import Link from "next/link.js";
 
 export default function Home() {
@@ -23,13 +28,13 @@ export default function Home() {
   const { writeContractAsync } = useWriteContract();
   const modalRef = useRef(null);
   const [txHash, setTxHash] = useState("");
-
+  const [loading, setLoading] = useState(false);
   const txResult = useTransactionConfirmations({
     //@ts-ignore
-    hash: txHash? txHash : "",
-  })
+    hash: txHash ? txHash : "",
+  });
 
-  console.log(txResult, "txResult")
+  console.log(txResult, "txResult");
   useEffect(() => {
     const handleClickOutside = (event: any) => {
       //@ts-ignore
@@ -56,19 +61,21 @@ export default function Home() {
     setToken(e.target.value);
   };
 
-  const Continue = async(e: any) => {
-    if(token){
-
-      const valueInWei = BigInt(token * 10**18);
+  const Continue = async (e: any) => {
+    setLoading(true);
+    if (token) {
+      const valueInWei = BigInt(token * 10 ** 18);
       const result = await writeContractAsync({
         abi: ABI,
         address: "0x5AECf31BFC4EC90B3f67AA4dbd6F68BeFcb655be",
         functionName: "buy",
         value: valueInWei,
       });
-      setTxHash(result)
-    setIsOpen(false);
-      console.log(result, "BuyTokenBuyToken",valueInWei);
+      setTxHash(result);
+      setLoading(false);
+      setIsOpen(false);
+      alert("transction done");
+      console.log(result, "BuyTokenBuyToken", valueInWei);
     }
   };
 
@@ -96,10 +103,10 @@ export default function Home() {
   }, [result]);
 
   useEffect(() => {
-    if(txResult?.isSuccess){
-      console.log(txResult?.isSuccess)
+    if (txResult?.isSuccess) {
+      console.log(txResult?.isSuccess);
     }
-  }, [txResult])
+  }, [txResult]);
 
   return (
     <div className="gradient-background">
@@ -270,15 +277,6 @@ export default function Home() {
                 className="border border-gray-300 rounded px-4 py-2 w-full"
               />
             </div>
-            {/* <div className="mb-4">
-              <input
-                type="text"
-                value={input2}
-                onChange={handleInputChange2}
-                placeholder="Input 2"
-                className="border border-gray-300 rounded px-4 py-2 w-full"
-              />
-            </div> */}
             <button
               onClick={closeModal}
               className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
