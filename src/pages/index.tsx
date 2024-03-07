@@ -266,7 +266,7 @@ export default function Home() {
                 type="text"
                 value={token}
                 onChange={handleInputChange1}
-                placeholder="Input 1"
+                placeholder="0.01"
                 className="border border-gray-300 rounded px-4 py-2 w-full"
               />
             </div>
