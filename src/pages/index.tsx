@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Inter } from "next/font/google";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGlobe } from "@fortawesome/free-solid-svg-icons";
@@ -21,6 +21,21 @@ export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
   const [input1, setInput1] = useState("");
   const [input2, setInput2] = useState("");
+  const modalRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event:any) => {
+      //@ts-ignore
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        closeModal();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const openModal = () => {
     setIsOpen(true);
@@ -30,14 +45,13 @@ export default function Home() {
     setIsOpen(false);
   };
 
-  const handleInputChange1 = (e: any) => {
+  const handleInputChange1 = (e:any) => {
     setInput1(e.target.value);
   };
 
-  const handleInputChange2 = (e: any) => {
+  const handleInputChange2 = (e:any) => {
     setInput2(e.target.value);
   };
-
   const result = useReadContract({
     abi: ABI,
     address: "0xfCE738C9C06180B14A0E7668CF3d616F95Ac4d07",
@@ -208,29 +222,31 @@ export default function Home() {
         </div>
       </main>
       {isOpen && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <span className="close-button" onClick={closeModal}>
+        <div className="fixed inset-0 z-50 overflow-auto bg-gray-800 bg-opacity-50 flex justify-center items-center">
+          <div ref={modalRef} className="bg-white rounded-lg p-6 w-full sm:w-96">
+            <span className="absolute top-0 right-0 p-2 cursor-pointer" onClick={closeModal}>
               &times;
             </span>
-            <h2>Modal Title</h2>
-            <div>
+            <h2 className="text-2xl mb-4">Details</h2>
+            <div className="mb-4">
               <input
                 type="text"
                 value={input1}
                 onChange={handleInputChange1}
                 placeholder="Input 1"
+                className="border border-gray-300 rounded px-4 py-2 w-full"
               />
             </div>
-            <div>
+            <div className="mb-4">
               <input
                 type="text"
                 value={input2}
                 onChange={handleInputChange2}
                 placeholder="Input 2"
+                className="border border-gray-300 rounded px-4 py-2 w-full"
               />
             </div>
-            <button onClick={closeModal}>Close Modal</button>
+            <button onClick={closeModal} className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mr-2">Close Modal</button>
           </div>
         </div>
       )}
