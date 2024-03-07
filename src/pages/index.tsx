@@ -10,20 +10,26 @@ import {
   faTelegram,
 } from "@fortawesome/free-brands-svg-icons";
 const inter = Inter({ subsets: ["latin"] });
-import ABI from "../../abi/abi.js";
-import { useAccount, useReadContract } from "wagmi";
+import ABI from "../../abi/abi.json";
+import { useAccount, useReadContract, useTransactionConfirmations, useWriteContract } from "wagmi";
 import Link from "next/link.js";
 
 export default function Home() {
   const { open } = useWeb3Modal();
   const { address } = useAccount();
   const [targetPrice, setTargetPrice] = useState(null);
-
+  const [token, setToken] = useState();
   const [isOpen, setIsOpen] = useState(false);
-  const [input1, setInput1] = useState("");
-  const [input2, setInput2] = useState("");
+  const { writeContractAsync } = useWriteContract();
   const modalRef = useRef(null);
+  const [txHash, setTxHash] = useState("");
 
+  const txResult = useTransactionConfirmations({
+    //@ts-ignore
+    hash: txHash? txHash : "",
+  })
+
+  console.log(txResult, "txResult")
   useEffect(() => {
     const handleClickOutside = (event: any) => {
       //@ts-ignore
@@ -47,12 +53,24 @@ export default function Home() {
   };
 
   const handleInputChange1 = (e: any) => {
-    setInput1(e.target.value);
+    setToken(e.target.value);
   };
 
-  const handleInputChange2 = (e: any) => {
-    setInput2(e.target.value);
+  const Continue = async(e: any) => {
+    if(token){
+
+      const valueInWei = BigInt(token * 10**18);
+      const result = await writeContractAsync({
+        abi: ABI,
+        address: "0x5AECf31BFC4EC90B3f67AA4dbd6F68BeFcb655be",
+        functionName: "buy",
+        value: valueInWei,
+      });
+      setTxHash(result)
+      console.log(result, "BuyTokenBuyToken",valueInWei);
+    }
   };
+
   const result = useReadContract({
     abi: ABI,
     address: "0xfCE738C9C06180B14A0E7668CF3d616F95Ac4d07",
@@ -68,12 +86,19 @@ export default function Home() {
     address: "0xfCE738C9C06180B14A0E7668CF3d616F95Ac4d07",
     functionName: "name",
   });
+
   useEffect(() => {
     if (result && result.data) {
       //@ts-ignore
       setTargetPrice(result.data.toString());
     }
   }, [result]);
+
+  useEffect(() => {
+    if(txResult?.isSuccess){
+      console.log(txResult?.isSuccess)
+    }
+  }, [txResult])
 
   return (
     <div className="gradient-background">
@@ -238,13 +263,13 @@ export default function Home() {
             <div className="mb-4">
               <input
                 type="text"
-                value={input1}
+                value={token}
                 onChange={handleInputChange1}
                 placeholder="Input 1"
                 className="border border-gray-300 rounded px-4 py-2 w-full"
               />
             </div>
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <input
                 type="text"
                 value={input2}
@@ -252,14 +277,15 @@ export default function Home() {
                 placeholder="Input 2"
                 className="border border-gray-300 rounded px-4 py-2 w-full"
               />
-            </div>
-            <button
-            onClick={closeModal}
-            className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
-            Cancel
-            </button>
+            </div> */}
             <button
               onClick={closeModal}
+              className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={Continue}
               className="text-white px-4 py-2 rounded mr-2"
               style={{ backgroundColor: "#422647" }}
             >
