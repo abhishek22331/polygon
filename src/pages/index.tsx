@@ -25,7 +25,7 @@ export default function Home() {
   const modalRef = useRef(null);
 
   useEffect(() => {
-    const handleClickOutside = (event:any) => {
+    const handleClickOutside = (event: any) => {
       //@ts-ignore
       if (modalRef.current && !modalRef.current.contains(event.target)) {
         closeModal();
@@ -46,11 +46,11 @@ export default function Home() {
     setIsOpen(false);
   };
 
-  const handleInputChange1 = (e:any) => {
+  const handleInputChange1 = (e: any) => {
     setInput1(e.target.value);
   };
 
-  const handleInputChange2 = (e:any) => {
+  const handleInputChange2 = (e: any) => {
     setInput2(e.target.value);
   };
   const result = useReadContract({
@@ -213,9 +213,9 @@ export default function Home() {
             </div>
             <button
               onClick={openModal}
-              className="relative button inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
+              className="relative button inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
             >
-              <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+              <span className="relative px-6 py-3 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
                 Buy
               </span>
             </button>
@@ -224,8 +224,14 @@ export default function Home() {
       </main>
       {isOpen && (
         <div className="fixed inset-0 z-50 overflow-auto bg-gray-800 bg-opacity-50 flex justify-center items-center">
-          <div ref={modalRef} className="bg-white rounded-lg p-6 w-full sm:w-96">
-            <span className="absolute top-0 right-0 p-2 cursor-pointer" onClick={closeModal}>
+          <div
+            ref={modalRef}
+            className="bg-white rounded-lg p-6 w-full sm:w-96"
+          >
+            <span
+              className="absolute top-0 right-0 p-2 cursor-pointer"
+              onClick={closeModal}
+            >
               &times;
             </span>
             <h2 className="text-2xl mb-4">Details</h2>
@@ -247,7 +253,18 @@ export default function Home() {
                 className="border border-gray-300 rounded px-4 py-2 w-full"
               />
             </div>
-            <button onClick={closeModal} className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mr-2">Close Modal</button>
+            <button
+            onClick={closeModal}
+            className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
+            Cancel
+            </button>
+            <button
+              onClick={closeModal}
+              className="text-white px-4 py-2 rounded mr-2"
+              style={{ backgroundColor: "#422647" }}
+            >
+              Continue
+            </button>
           </div>
         </div>
       )}
