@@ -67,6 +67,7 @@ export default function Home() {
         value: valueInWei,
       });
       setTxHash(result)
+    setIsOpen(false);
       console.log(result, "BuyTokenBuyToken",valueInWei);
     }
   };
