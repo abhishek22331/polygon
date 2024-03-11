@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGlobe } from "@fortawesome/free-solid-svg-icons";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
+import Swal from 'sweetalert2'
 import {
   faLinkedin,
   faSquareXTwitter,
@@ -63,19 +64,32 @@ export default function Home() {
 
   const Continue = async (e: any) => {
     setLoading(true);
+    let result
     if (token) {
       const valueInWei = BigInt(token * 10 ** 18);
-      const result = await writeContractAsync({
-        abi: ABI,
-        address: "0x5AECf31BFC4EC90B3f67AA4dbd6F68BeFcb655be",
-        functionName: "buy",
-        value: valueInWei,
-      });
-      setTxHash(result);
-      setLoading(false);
-      setIsOpen(false);
-      alert("transction done");
-      console.log(result, "BuyTokenBuyToken", valueInWei);
+      if(address){
+        result= await writeContractAsync({
+         abi: ABI,
+         address: "0x5AECf31BFC4EC90B3f67AA4dbd6F68BeFcb655be",
+         functionName: "buy",
+         value: valueInWei,
+        });
+        //@ts-ignore
+        setTxHash(result);
+        setLoading(false);
+        setIsOpen(false);
+        Swal.fire({
+          title: "Good job!",
+          text: "transction done",
+          icon: "success"
+        });
+      }else{
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Please connect Your wallet",
+        });
+      }
     }
   };
 
