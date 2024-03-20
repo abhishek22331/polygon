@@ -379,12 +379,13 @@ console.log(buyper,"buyperbuyper")
     <div className="max-w-screen-xl mx-auto p-4">
       <div className="grid grid-cols-3 gap-4 gradient-background">
         <div className="buy border rounded p-2">
+          <h2>Tax in MATIC : {sellper?sellper:"--"}</h2>
           <input
             className="border p-2 rounded"
             placeholder="Token Amount"
             type="string"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => sellFun(e)}
-          />
+          /> 
           <button
             onClick={sellToken}
             className="relative button inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
@@ -395,12 +396,14 @@ console.log(buyper,"buyperbuyper")
           </button>
         </div>
         <div className="sell border rounded p-2">
+          <h2>Tax in MATIC : {buyper?buyper:"--"}</h2>
           <input
             className="border p-2 rounded"
             placeholder="Token Amount"
             type="string"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => buyFun(e)}
           />
+
           <button onClick={buyToken} className="relative button inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800">
             <span className="relative px-6 py-3 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
               Buy
@@ -408,6 +411,7 @@ console.log(buyper,"buyperbuyper")
           </button>
         </div>
         <div className="transfer border rounded p-2">
+          <h2>Tax in MATIC : {transferper?transferper:"--"}</h2>
           <input
             className="border p-2 rounded"
             placeholder="Token Amount"
@@ -416,6 +420,7 @@ console.log(buyper,"buyperbuyper")
               transferFun(e)
             }
           />
+
           <br/>
           <input
             className="border p-2 rounded"
