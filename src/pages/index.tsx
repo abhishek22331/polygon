@@ -4,14 +4,15 @@ import { Inter } from "next/font/google";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGlobe } from "@fortawesome/free-solid-svg-icons";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
+import Page from "../home/page"
 import {
   faLinkedin,
   faSquareXTwitter,
   faTelegram,
 } from "@fortawesome/free-brands-svg-icons";
 const inter = Inter({ subsets: ["latin"] });
-import ABI from "../../abi/abi.json";
+// import ABI from "../../abi/abi";
 import {
   useAccount,
   useReadContract,
@@ -19,14 +20,220 @@ import {
   useWriteContract,
 } from "wagmi";
 import Link from "next/link.js";
+// import { ABI } from "../../abi/abi";
+const ABI = [
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_tokenAddress",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "target",
+        "type": "address"
+      }
+    ],
+    "name": "AddressEmptyCode",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "AddressInsufficientBalance",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "FailedInnerCall",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      }
+    ],
+    "name": "SafeERC20FailedOperation",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ERC20Instance",
+    "outputs": [
+      {
+        "internalType": "contract IERC20",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "balances",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "buy",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "buyTaxRate",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "sell",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "sellTaxRate",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "transfer",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "transferTaxRate",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
 
 export default function Home() {
+  const {
+    data: hash,
+    isPending,
+    error,
+    isError,
+    isSuccess,
+    writeContract,
+    writeContractAsync,
+  } = useWriteContract();  
   const { open } = useWeb3Modal();
   const { address } = useAccount();
   const [targetPrice, setTargetPrice] = useState(null);
   const [token, setToken] = useState();
   const [isOpen, setIsOpen] = useState(false);
-  const { writeContractAsync } = useWriteContract();
   const modalRef = useRef(null);
   const [txHash, setTxHash] = useState("");
   const [loading, setLoading] = useState(false);
@@ -64,15 +271,15 @@ export default function Home() {
 
   const Continue = async (e: any) => {
     setLoading(true);
-    let result
+    let result;
     if (token) {
       const valueInWei = BigInt(token * 10 ** 18);
-      if(address){
-        result= await writeContractAsync({
-         abi: ABI,
-         address: "0x5AECf31BFC4EC90B3f67AA4dbd6F68BeFcb655be",
-         functionName: "buy",
-         value: valueInWei,
+      if (address) {
+        result = await writeContractAsync({
+          abi: ABI,
+          address: "0x343D3fB106712c5E8095D676B117311DF359155d",
+          functionName: "buy",
+          value: valueInWei,
         });
         //@ts-ignore
         setTxHash(result);
@@ -81,9 +288,9 @@ export default function Home() {
         Swal.fire({
           title: "Good job!",
           text: "transction done",
-          icon: "success"
+          icon: "success",
         });
-      }else{
+      } else {
         Swal.fire({
           icon: "error",
           title: "Oops...",
@@ -123,6 +330,7 @@ export default function Home() {
   }, [txResult]);
 
   return (
+    <>
     <div className="gradient-background">
       <main>
         <nav className="bg-white border-gray-200 dark:bg-gray-900">
@@ -213,14 +421,20 @@ export default function Home() {
             </div>
           </div>
         </nav>
-        <div className="information max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+        {/* <div className="information max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <div className="first-div">
             <h1 className="chain">Polarfi</h1>
             <h1>
-              In publishing and graphic design, Lorem ipsum is a placeholder
-              text commonly used to demonstrate the visual form of a document or
-              a typeface without relying on meaningful content. Lorem ipsum may
-              be used as a placeholder before the final copy is available.
+              FROST Token is a groundbreaking DeFi protocol launching on the
+              Polygon Chain, designed to offer a unique blend of asset sharing,
+              reward opportunities, and community-driven initiatives. By
+              leveraging the power of blockchain technology, smart contracts,
+              and engaging gameplay, FROST Token aims to create a sustainable
+              and rewarding ecosystem for its holders. This whitepaper provides
+              a comprehensive overview of the FROST Token protocol, including
+              its mechanics, features, and vision for the future, with a special
+              focus on the integration of an RPG game that adds value and
+              engagement to the community.
             </h1>
             <div className="icons">
               <FontAwesomeIcon icon={faGlobe} size="2x" />
@@ -232,7 +446,7 @@ export default function Home() {
           <div className="second-div">
             <div className="raised">
               {/**@ts-ignore */}
-              <h1>{Nameresult?.data}</h1>
+              {/* <h1>{Nameresult?.data}</h1>
 
               <div>
                 <h2>Total Raised</h2>
@@ -248,16 +462,16 @@ export default function Home() {
               <div className="data2">
                 {" "}
                 {/**@ts-ignore */}
-                <h1>{Symbolresult.data}</h1>
+                {/* <h1>{Symbolresult.data}</h1>
                 {/**@ts-ignore */}
-                {targetPrice === null ? (
+                {/* {targetPrice === null ? (
                   <p>Loading...</p>
                 ) : (
                   <h1>{targetPrice}</h1>
                 )}
                 <h1>Public</h1>
-              </div>
-            </div>
+              </div> */} 
+            {/* </div>
             <button
               onClick={openModal}
               className="relative button inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
@@ -265,11 +479,11 @@ export default function Home() {
               <span className="relative px-6 py-3 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
                 Buy
               </span>
-            </button>
-          </div>
-        </div>
-      </main>
-      {isOpen && (
+            </button> */}
+          {/* </div>
+        </div>*/}
+      </main> 
+      {/*{isOpen && (
         <div className="fixed inset-0 z-50 overflow-auto bg-gray-800 bg-opacity-50 flex justify-center items-center">
           <div
             ref={modalRef}
@@ -306,7 +520,9 @@ export default function Home() {
             </button>
           </div>
         </div>
-      )}
+      )} */}
     </div>
+      <Page address={address}/>
+    </>
   );
 }
