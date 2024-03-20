@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { BigNumber, ethers } from "ethers";
 import Swal from "sweetalert2";
-// import web3 from "web3";
+import web3 from "web3";
 declare global {
   interface Window {
     ethereum?: any; // Allow ethereum to be undefined
@@ -223,8 +223,8 @@ const Card = (addresssss: any) => {
   const [buy, setBuy] = useState("");
   const [transfer, setTransfer] = useState("");
   const [sellper, setSellper] = useState(0);
-  const [buyper, setBuyper] = useState("");
-  const [transferper, setTransferper] = useState("");
+  const [buyper, setBuyper] = useState(0);
+  const [transferper, setTransferper] = useState(0);
   const {
     data: hash,
     isPending,
@@ -244,8 +244,7 @@ const Card = (addresssss: any) => {
     };
   }
   const getToWei = (sell: string) => {
-    // let final=web3.utils.toWei(sell, 'gwei');
-    const final = ethers.utils.parseEther(sell);
+  let final=web3.utils.toWei(sell, 'ether');
     console.log(final, "pppp");
     return final;
   };
@@ -253,22 +252,25 @@ const Card = (addresssss: any) => {
     const sellOutput = getToWei(e?.target?.value);
     setSell(e?.target?.value);
     const a = calculatePercentages(e.target.value, 4);
-    //@ts-ignore
-    setSellper(parseInt(a));
+    console.log("aaaaaaaaaa",a.percentage4)
+    setSellper(a.percentage4);
     console.log(sellOutput, "sellOutput", a);
   };
+  console.log(sellper,"pepepepepepp")
   const buyFun = (e: any) => {
     const sellOutput = getToWei(e?.target?.value);
     const a = calculatePercentages(e.target.value, 2);
-    // setBuy(sellOutput.toString());
+    setBuy(sellOutput)
+    setBuyper(a.percentage4);
+
     console.log(sellOutput, "buyFun", a);
   };
 
   const transferFun = (e: any) => {
     const sellOutput = getToWei(e?.target?.value);
-    // setTransfer(sellOutput.toString());
+    setTransfer(sellOutput);
     const a = calculatePercentages(e.target.value, 1);
-
+    setTransferper(a.percentage4)
     console.log(sellOutput, "sellOutput", a);
   };
   const { data } = useReadContract({
@@ -288,30 +290,9 @@ const Card = (addresssss: any) => {
     const valueInWei = BigInt(parseInt("1000000000000000000"));
     // const valueper=parseInt(sellper)
     if (address) {
-      //  const dataNew = await ana_ico_instance.methods
-      //  .sell(valueInWei)
-      //  .send({ from: address.address, value: "0"});
-      //  console.log(dataNew,"done")
-      //   const executeTransaction=async()=> {
-      //     try {
-      //         // Request access to user accounts
-      //         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-      //         // const address = accounts[0]; // Assuming you want to use the first account
-
-      //         // Execute transaction
-      //         const dataNew = await ana_ico_instance.methods
-      //             .sell(valueInWei)
-      //             .send({ from: address.address, value: "0", gas: "2000000" });
-      //         console.log(dataNew, "done");
-      //     } catch (error) {
-      //         console.error("Error executing transaction:", error);
-      //     }
-      // }
-      // executeTransaction()
 
       const _amount = getToWei(selldata);
       const __amount = getToWei("0.04");
-
       console.log(_amount, "amaoaoaaoj");
 
       if (signer) {
@@ -322,37 +303,14 @@ const Card = (addresssss: any) => {
           ABI,
           signer
         );
-
-          console.log(contracts, "contracts");
-          const tx = await contracts.sell("1000000000000000000", { value: getToWei("0.04") });
+          console.log(sellper, "contracts");
+          const tx = await contracts.sell(_amount, { value: getToWei(sellper.toString()) ,gasLimit:"20000000"});
           const receipt = await tx.wait();
           console.log("Transaction mined:", receipt);
         } catch (error) {
           console.error("Error casting vote:", error);
         }
       }
-
-      //   const { config, error } = usePrepareContractWrite({
-      //     address: "0x343D3fB106712c5E8095D676B117311DF359155d",
-      //     abi: ABI,
-      //     functionName: 'sell',
-      //     args: [sellper],
-      //     value: valueInWei,
-      //   });
-      // console.log(config,"ooooooooooo",error)
-      // const { data, write } = useContractWrite(config);
-      // const { isLoading, isSuccess, isError } = useWaitForTransaction({ hash: data?.hash });
-
-      // const handleClick = async () => {
-      //   if (!write) return; // Check if transaction is ready
-      //   await write();
-      // };
-      //  await writeContractAsync({
-      //   abi: ABI,
-      //   address: "0x343D3fB106712c5E8095D676B117311DF359155d",
-      //   functionName: "sell",
-      //   value: valueInWei,
-      // });
     } else {
       Swal.fire({
         icon: "error",
