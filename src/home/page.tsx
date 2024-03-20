@@ -220,7 +220,7 @@ const Card = (addresssss: any) => {
   const signer = useEthersSigner();
 
   const [selldata, setSell] = useState("");
-  const [buy, setBuy] = useState("");
+  const [buydata, setBuy] = useState("");
   const [transfer, setTransfer] = useState("");
   const [sellper, setSellper] = useState(0);
   const [buyper, setBuyper] = useState(0);
@@ -244,7 +244,7 @@ const Card = (addresssss: any) => {
     };
   }
   const getToWei = (sell: string) => {
-  let final=web3.utils.toWei(sell, 'ether');
+    let final = web3.utils.toWei(sell, "ether");
     console.log(final, "pppp");
     return final;
   };
@@ -252,26 +252,22 @@ const Card = (addresssss: any) => {
     const sellOutput = getToWei(e?.target?.value);
     setSell(e?.target?.value);
     const a = calculatePercentages(e.target.value, 4);
-    console.log("aaaaaaaaaa",a.percentage4)
+    console.log("aaaaaaaaaa", a.percentage4);
     setSellper(a.percentage4);
     console.log(sellOutput, "sellOutput", a);
   };
-  console.log(sellper,"pepepepepepp")
+  console.log(sellper, "pepepepepepp");
   const buyFun = (e: any) => {
-    const sellOutput = getToWei(e?.target?.value);
     const a = calculatePercentages(e.target.value, 2);
-    setBuy(sellOutput)
+    setBuy(e?.target?.value);
     setBuyper(a.percentage4);
 
-    console.log(sellOutput, "buyFun", a);
   };
-
+console.log(buyper,"buyperbuyper")
   const transferFun = (e: any) => {
-    const sellOutput = getToWei(e?.target?.value);
-    setTransfer(sellOutput);
+    setTransfer(e?.target?.value);
     const a = calculatePercentages(e.target.value, 1);
-    setTransferper(a.percentage4)
-    console.log(sellOutput, "sellOutput", a);
+    setTransferper(a.percentage4);
   };
   const { data } = useReadContract({
     address: "0x343D3fB106712c5E8095D676B117311DF359155d",
@@ -285,26 +281,29 @@ const Card = (addresssss: any) => {
   //   ABI,
   //   "0x343D3fB106712c5E8095D676B117311DF359155d"
   // );
+  console.log(sellper, "sellpersellpersellpersellpersellpersellper");
   const sellToken = async () => {
     console.log("BigInt(parseInt(sell))", selldata);
     const valueInWei = BigInt(parseInt("1000000000000000000"));
     // const valueper=parseInt(sellper)
     if (address) {
-
       const _amount = getToWei(selldata);
       const __amount = getToWei("0.04");
-      console.log(_amount, "amaoaoaaoj");
+      console.log(_amount, "_amount from selll");
 
       if (signer) {
         console.log("Andara ghe kya ???");
         try {
-        const contracts = new ethers.Contract(
-          "0x343D3fB106712c5E8095D676B117311DF359155d",
-          ABI,
-          signer
-        );
+          const contracts = new ethers.Contract(
+            "0x343D3fB106712c5E8095D676B117311DF359155d",
+            ABI,
+            signer
+          );
           console.log(sellper, "contracts");
-          const tx = await contracts.sell(_amount, { value: getToWei(sellper.toString()) ,gasLimit:"20000000"});
+          const tx = await contracts.sell(_amount, {
+            value: getToWei(sellper.toString()),
+            gasLimit: "20000000",
+          });
           const receipt = await tx.wait();
           console.log("Transaction mined:", receipt);
         } catch (error) {
@@ -319,8 +318,34 @@ const Card = (addresssss: any) => {
       });
     }
   };
-  console.log(error, "errorerror");
 
+  const buyToken = async () => {
+    try {
+      if (address) {
+        const _amount = getToWei(buydata);
+        console.log(_amount,"_amount from buy")
+        if (signer) {
+          try {
+            const contracts = new ethers.Contract(
+              "0x343D3fB106712c5E8095D676B117311DF359155d",
+              ABI,
+              signer
+            );
+            const tx = await contracts.buy(_amount, {
+              value: getToWei("0.02"),
+              gasLimit: "20000000",
+            });
+          } catch (error) {}
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Please connect Your wallet",
+          });
+        }
+      }
+    } catch (error) {}
+  };
   return (
     <div className="max-w-screen-xl mx-auto p-4">
       <div className="grid grid-cols-3 gap-4 gradient-background">
@@ -347,7 +372,7 @@ const Card = (addresssss: any) => {
             type="string"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => buyFun(e)}
           />
-          <button className="relative button inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800">
+          <button onClick={buyToken} className="relative button inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800">
             <span className="relative px-6 py-3 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
               Buy
             </span>
