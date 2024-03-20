@@ -224,6 +224,7 @@ const Card = (addresssss: any) => {
   const [transfer, setTransfer] = useState("");
   const [sellper, setSellper] = useState(0);
   const [buyper, setBuyper] = useState(0);
+  const [receiverAddress, setReceiverAddress] = useState<string>('');
   const [transferper, setTransferper] = useState(0);
   const {
     data: hash,
@@ -256,7 +257,7 @@ const Card = (addresssss: any) => {
     setSellper(a.percentage4);
     console.log(sellOutput, "sellOutput", a);
   };
-  console.log(sellper, "pepepepepepp");
+  console.log(receiverAddress, "receiverAddressreceiverAddress");
   const buyFun = (e: any) => {
     const a = calculatePercentages(e.target.value, 2);
     setBuy(e?.target?.value);
@@ -332,7 +333,7 @@ console.log(buyper,"buyperbuyper")
               signer
             );
             const tx = await contracts.buy(_amount, {
-              value: getToWei("0.02"),
+              value: getToWei(buyper.toString()),
               gasLimit: "20000000",
             });
           } catch (error) {}
@@ -346,6 +347,34 @@ console.log(buyper,"buyperbuyper")
       }
     } catch (error) {}
   };
+  const transferToken=async()=>{
+    try {
+      if(address){
+        const _amount=getToWei(transfer);
+        if(signer){
+          console.log(_amount,"this is transfer token1111111111111")
+
+          try {
+            const contracts = new ethers.Contract(
+              "0x343D3fB106712c5E8095D676B117311DF359155d",
+              ABI,
+              signer
+              );
+              console.log(contracts,"contractscontracts")
+              const tx = await contracts.transfer(receiverAddress,_amount, {
+                value: getToWei(transferper.toString()),
+                
+              });
+              console.log(_amount,"this is transfer token")
+          } catch (error) {
+            
+          }
+        }
+      }
+    } catch (error) {
+      
+    }
+  }
   return (
     <div className="max-w-screen-xl mx-auto p-4">
       <div className="grid grid-cols-3 gap-4 gradient-background">
@@ -387,7 +416,16 @@ console.log(buyper,"buyperbuyper")
               transferFun(e)
             }
           />
-          <button className="relative button inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800">
+          <br/>
+          <input
+            className="border p-2 rounded"
+            placeholder="Enter Receiver Address"
+            type="string"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setReceiverAddress(e.target.value)
+          }
+          />
+          <button onClick={transferToken} className="relative button inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800">
             <span className="relative px-6 py-3 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
               Transfer
             </span>
