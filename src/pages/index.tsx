@@ -407,17 +407,20 @@ export default function Home() {
                     Pricing
                   </a>
                 </li> */}
-
-                <button onClick={() => open()}>
+              <li>
+              <button className="connect-btn" onClick={() => open()}>
                   {address ? (
                     address?.substring(0, 5) + "..." + address.substring(37, 42)
                   ) : (
+                    <div className="metamask-c">
                     <span>
-                      Connect MetaMask
-                      <img src="/metamask.svg" style={{ maxWidth: "20%" }} />
-                    </span>
+                      Connect MetaMask</span>
+                    <img src="/metamask.svg" width={30} height={30}/>
+                    </div>
                   )}
                 </button>
+              </li>
+               
               </ul>
             </div>
           </div>
@@ -523,8 +526,9 @@ export default function Home() {
         </div>
       )} */}
     </div>
-      <Page address={address}/>
-      {/* <Stacking/> */}
+      {/* <Page address={address}/> */}
+      
+      <Stacking/>
     </>
   );
 }
