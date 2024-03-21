@@ -35,7 +35,8 @@ function Accordion({ items }: { items: AccordionItem[] }) {
       <div key={index}>
 
 <div
-            onClick={() => toggleAccordion(index)}
+            // onClick={() => toggleAccordion(index)} 
+            // please uncomment above if accordion needed
             style={{ cursor: 'pointer', marginBottom: '5px' }}
           className='acc-title'
           >
@@ -44,11 +45,11 @@ function Accordion({ items }: { items: AccordionItem[] }) {
             <div style={{ flex: 1, textAlign: 'right' }} className='right-c'>{item.rightContent}</div>
        
         
-          {openIndex === index ? (
+          {/* {openIndex === index ? (
             <span>&#x1F869;</span> // Down arrow
           ) : (
             <span> &#129131;</span> // Right arrow
-          )}
+          )} */}
         </div>
         {openIndex === index && (
           <div  className='acc-content' 

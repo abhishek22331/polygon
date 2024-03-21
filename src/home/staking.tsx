@@ -4,22 +4,22 @@ import Accordion from "./Accordion";
 const staking = () => {
   const accordionItems = [
     {
-      title: 'Routing ',
+      title: 'Staked Amount ',
      
-      rightContent: <div><span className='badge-grey'>Protocol</span></div>,
+      rightContent: <div>0 FROST</div>,
       content: '<p>Determines whether you are using the protocol&apos;s deposit pool or being routed through secondary markets.</p><p>Note that there is a 0.05% deposit fee when minting rETH through the protocol. This fee prevents attacks around rate updates. The income from this fee is distributed to all rETH holders.</p>'
     },
     {
-      title: 'Exchange Date',
+      title: 'Wallet Balance',
      
-      rightContent: <div>1 rETH = 1.10145 ETH</div>,
+      rightContent: <div>0 FROST</div>,
       content: 'Paragraph 1 for Item 1. <p>Paragraph 2 for Item 1.</p>',
     },
     {
-      title: 'Average Return',
+      title: 'APR Rate',
      
-      rightContent: <div><span className='orange'>≈ 3.11%</span> APR</div>,
-      content: 'Paragraph 1 for Item 2. <p>Paragraph 2 for Item 2.</p>',
+      rightContent: <div>1% APR</div>,
+      content: '<p>rETH&apos;s APR is calculated using a 7 day average</p>',
     }
   
   ];
@@ -38,7 +38,7 @@ const staking = () => {
     <div className="center wide">
     <div className="w-full text-gray">
       <div className="mx-auto fl-all-g-10">
-          <div className="flex h-full flex-col justify-between stack-out ">
+          {/* <div className="flex h-full flex-col justify-between stack-out ">
               <div className="relative">
                 <div className="stack-p">
                     <div>
@@ -64,23 +64,23 @@ const staking = () => {
                 </div>
                
               </div>
-          </div>
+          </div> */}
           <div className="flex h-full flex-col justify-between stack-out ">
               <div className="relative">
                 <div className="stack-p">
                     <div>
-                    <span className="">Receive rETH</span>
+                    <span className="">Stake FROST</span>
                     </div>
                     <div>
-                    <span className="text-xxs sm:text-base"> Balance: 0.00 <span>rETH</span></span>
-                    <span className=" badge-purple  text-white ">Max</span>
+                    <span className="text-xxs sm:text-base"> Balance: 0.00 <span>Matic</span></span>
+                   
                     </div>
                 </div>
                 <div className="form-box">
                   <div className="relative">
                     <span className="icon-circle icon-pos absolute"><img src="/img/eth-icon.png" alt="eth"/></span>
-                    <input type="text" name="vstack" placeholder="0.00000" className="form-textbox pad-left pd-r-90" />
-                    <span className="group-text-right"><span className="relative -top-[1px] pr-1 text-xl sm:text-2xl">≈</span> $0.00 USD</span>
+                    <input type="text" name="vstack" placeholder="Enter the amount in FROST" className="form-textbox pad-left pd-r-90" />
+                    <span className="group-text-right t-pos"> <button className="badge-purple badge-max text-white ">Max</button></span>
                    
                   </div>
                 </div>
@@ -89,13 +89,13 @@ const staking = () => {
                 <div>
                 <div className="acc-title border-b-none">
 
-                    <strong style={{ flex: 2 }}>Transaction Cost</strong>
-                                <div style={{ flex: 1, textAlign: 'right' }} className='right-c'>0.01350 ETH (≈ $48.08 USD)</div>
+                    <strong style={{ flex: 2 }}>Reward Balance</strong>
+                                <div style={{ flex: 1, textAlign: 'right' }} className='right-c'>1 Matic <button disabled className='badge-lt-grey'>Claim</button></div>
 
                     </div>
-                    <div className="acc-text">
-                       <div className="ms-auto">@ 27 gwei <span className='badge-green'>low</span></div> 
-                    </div>
+                    {/* <div className="acc-text">
+                       <div className="ms-auto">@ 27 gwei <span className='badge-green'>Claim</span></div> 
+                    </div> */}
                 </div>
               </div>
           </div>
