@@ -6,6 +6,7 @@ import { faGlobe } from "@fortawesome/free-solid-svg-icons";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import Swal from "sweetalert2";
 import Page from "../home/page"
+import Stacking from "../home/staking"
 import {
   faLinkedin,
   faSquareXTwitter,
@@ -523,6 +524,7 @@ export default function Home() {
       )} */}
     </div>
       <Page address={address}/>
+      {/* <Stacking/> */}
     </>
   );
 }

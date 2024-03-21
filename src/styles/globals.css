@@ -109,3 +109,12 @@ input {
 .sell-button{
   background-color: #8247e5;
 }
+.staking{
+  display: flex;
+  gap: 850px;
+  padding-top: 30px;
+}
+.head_staking{
+  color :#6e757c;
+  font-size: 25px;
+}
