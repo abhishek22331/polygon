@@ -5,8 +5,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGlobe } from "@fortawesome/free-solid-svg-icons";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import Swal from "sweetalert2";
-import Page from "../home/page"
-import Stacking from "../home/staking"
+import Page from "../home/page";
+import Stacking from "../home/staking";
+import { useBalance } from 'wagmi'
+
 import {
   faLinkedin,
   faSquareXTwitter,
@@ -21,205 +23,205 @@ import {
   useWriteContract,
 } from "wagmi";
 import Link from "next/link.js";
+import Web3 from 'web3';
 // import { ABI } from "../../abi/abi";
 const ABI = [
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "_tokenAddress",
-        "type": "address"
-      }
+        internalType: "address",
+        name: "_tokenAddress",
+        type: "address",
+      },
     ],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
+    stateMutability: "nonpayable",
+    type: "constructor",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "target",
-        "type": "address"
-      }
+        internalType: "address",
+        name: "target",
+        type: "address",
+      },
     ],
-    "name": "AddressEmptyCode",
-    "type": "error"
+    name: "AddressEmptyCode",
+    type: "error",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
     ],
-    "name": "AddressInsufficientBalance",
-    "type": "error"
+    name: "AddressInsufficientBalance",
+    type: "error",
   },
   {
-    "inputs": [],
-    "name": "FailedInnerCall",
-    "type": "error"
+    inputs: [],
+    name: "FailedInnerCall",
+    type: "error",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      }
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
     ],
-    "name": "SafeERC20FailedOperation",
-    "type": "error"
+    name: "SafeERC20FailedOperation",
+    type: "error",
   },
   {
-    "inputs": [],
-    "name": "ERC20Instance",
-    "outputs": [
+    inputs: [],
+    name: "ERC20Instance",
+    outputs: [
       {
-        "internalType": "contract IERC20",
-        "name": "",
-        "type": "address"
-      }
+        internalType: "contract IERC20",
+        name: "",
+        type: "address",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
     ],
-    "name": "balances",
-    "outputs": [
+    name: "balances",
+    outputs: [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
     ],
-    "name": "buy",
-    "outputs": [
+    name: "buy",
+    outputs: [
       {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
     ],
-    "stateMutability": "payable",
-    "type": "function"
+    stateMutability: "payable",
+    type: "function",
   },
   {
-    "inputs": [],
-    "name": "buyTaxRate",
-    "outputs": [
+    inputs: [],
+    name: "buyTaxRate",
+    outputs: [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [],
-    "name": "owner",
-    "outputs": [
+    inputs: [],
+    name: "owner",
+    outputs: [
       {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
     ],
-    "name": "sell",
-    "outputs": [
+    name: "sell",
+    outputs: [
       {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
     ],
-    "stateMutability": "payable",
-    "type": "function"
+    stateMutability: "payable",
+    type: "function",
   },
   {
-    "inputs": [],
-    "name": "sellTaxRate",
-    "outputs": [
+    inputs: [],
+    name: "sellTaxRate",
+    outputs: [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
+        internalType: "address",
+        name: "to",
+        type: "address",
       },
       {
-        "internalType": "uint256",
-        "name": "value",
-        "type": "uint256"
-      }
+        internalType: "uint256",
+        name: "value",
+        type: "uint256",
+      },
     ],
-    "name": "transfer",
-    "outputs": [
+    name: "transfer",
+    outputs: [
       {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
     ],
-    "stateMutability": "payable",
-    "type": "function"
+    stateMutability: "payable",
+    type: "function",
   },
   {
-    "inputs": [],
-    "name": "transferTaxRate",
-    "outputs": [
+    inputs: [],
+    name: "transferTaxRate",
+    outputs: [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
-  }
-]
-
+    stateMutability: "view",
+    type: "function",
+  },
+];
 export default function Home() {
   const {
     data: hash,
@@ -229,8 +231,9 @@ export default function Home() {
     isSuccess,
     writeContract,
     writeContractAsync,
-  } = useWriteContract();  
+  } = useWriteContract();
   const { open } = useWeb3Modal();
+  const [balance,setBalance]=useState<any>("")
   const { address } = useAccount();
   const [targetPrice, setTargetPrice] = useState(null);
   const [token, setToken] = useState();
@@ -242,8 +245,37 @@ export default function Home() {
     //@ts-ignore
     hash: txHash ? txHash : "",
   });
-
-  console.log(txResult, "txResult");
+  if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
+    // Instantiate Web3 with MetaMask's provider
+    const web3 = new Web3(window.ethereum);
+  
+    const getAccountBalance = async () => {
+      try {
+        // Request accounts access if not already granted
+        await window.ethereum.request({ method: 'eth_requestAccounts' });
+        // Get the selected account
+        const accounts = await web3.eth.getAccounts();
+        const address = accounts[0]; // Assuming the first account is the one you want to check
+        // Get the balance of the account
+        const balance = await web3.eth.getBalance(address);
+        // Convert balance from Wei to Ether
+        const balanceInEther = web3.utils.fromWei(balance, 'ether');
+        return balanceInEther;
+      } catch (error) {
+        console.error('Error fetching account balance:', error);
+        return null;
+      }
+    };
+  
+    // Usage
+    getAccountBalance().then(balance => {
+      setBalance(balance?.toString())
+      console.log('Account balance:', balance);
+    });
+  } else {
+    console.error('MetaMask is not installed or not detected.');
+  }
+  // console.log(open, "opopenopenen");
   useEffect(() => {
     const handleClickOutside = (event: any) => {
       //@ts-ignore
@@ -270,6 +302,8 @@ export default function Home() {
     setToken(e.target.value);
   };
 
+ 
+console.log(balance,"balancebalance")
   const Continue = async (e: any) => {
     setLoading(true);
     let result;
@@ -303,20 +337,23 @@ export default function Home() {
 
   const result = useReadContract({
     abi: ABI,
-    address: "0xfCE738C9C06180B14A0E7668CF3d616F95Ac4d07",
+    address: "0x343D3fB106712c5E8095D676B117311DF359155d",
+
     functionName: "targetPrice",
   });
   const Symbolresult = useReadContract({
     abi: ABI,
-    address: "0xfCE738C9C06180B14A0E7668CF3d616F95Ac4d07",
+    address: "0x343D3fB106712c5E8095D676B117311DF359155d",
+
     functionName: "symbol",
   });
   const Nameresult = useReadContract({
     abi: ABI,
-    address: "0xfCE738C9C06180B14A0E7668CF3d616F95Ac4d07",
+    address: "0x343D3fB106712c5E8095D676B117311DF359155d",
+
     functionName: "name",
   });
-
+  console.log(result, "resultresult");
   useEffect(() => {
     if (result && result.data) {
       //@ts-ignore
@@ -326,72 +363,72 @@ export default function Home() {
 
   useEffect(() => {
     if (txResult?.isSuccess) {
-      console.log(txResult?.isSuccess);
+      console.log(txResult?.isSuccess, "sususususuus");
     }
   }, [txResult]);
 
   return (
     <>
-    <div className="gradient-background">
-      <main>
-        <nav className="bg-white border-gray-200 dark:bg-gray-900">
-          <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-            <Link
-              href="/"
-              className="flex items-center space-x-3 rtl:space-x-reverse"
-            >
-              <img src="/polygon.svg" style={{ maxWidth: "20%" }} />
-              <span className="address self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-                Polarfi
-              </span>
-            </Link>
-            <button
-              data-collapse-toggle="navbar-default"
-              type="button"
-              className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-              aria-controls="navbar-default"
-              aria-expanded="false"
-            >
-              <span className="sr-only">Open main menu</span>
-              <svg
-                className="w-5 h-5"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 17 14"
+      <div className="gradient-background">
+        <main>
+          <nav className="bg-white border-gray-200 dark:bg-gray-900">
+            <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+              <Link
+                href="/"
+                className="flex items-center space-x-3 rtl:space-x-reverse"
               >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M1 1h15M1 7h15M1 13h15"
-                />
-              </svg>
-            </button>
-            <div
-              className="hidden w-full md:block md:w-auto"
-              id="navbar-default"
-            >
-              <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-                <li>
-                  <Link
-                    href="#"
-                    className="address block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500"
-                    aria-current="page"
-                  >
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#"
-                    className="address block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-                  >
-                    Stake
-                  </Link>
-                </li>
-                {/* <li>
+                <img src="/polygon.svg" style={{ maxWidth: "20%" }} />
+                <span className="address self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+                  Polarfi
+                </span>
+              </Link>
+              <button
+                data-collapse-toggle="navbar-default"
+                type="button"
+                className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                aria-controls="navbar-default"
+                aria-expanded="false"
+              >
+                <span className="sr-only">Open main menu</span>
+                <svg
+                  className="w-5 h-5"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 17 14"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M1 1h15M1 7h15M1 13h15"
+                  />
+                </svg>
+              </button>
+              <div
+                className="hidden w-full md:block md:w-auto"
+                id="navbar-default"
+              >
+                <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+                  <li>
+                    <Link
+                      href="#"
+                      className="address block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500"
+                      aria-current="page"
+                    >
+                      Home
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="#"
+                      className="address block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                    >
+                      Stake
+                    </Link>
+                  </li>
+                  {/* <li>
                   <a
                     href="#"
                     className="address block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
@@ -399,7 +436,7 @@ export default function Home() {
                     Services
                   </a>
                 </li> */}
-                {/* <li>
+                  {/* <li>
                   <a
                     href="#"
                     className="address block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
@@ -407,25 +444,24 @@ export default function Home() {
                     Pricing
                   </a>
                 </li> */}
-              <li>
-              <button className="connect-btn" onClick={() => open()}>
-                  {address ? (
-                    address?.substring(0, 5) + "..." + address.substring(37, 42)
-                  ) : (
-                    <div className="metamask-c">
-                    <span>
-                      Connect MetaMask</span>
-                    <img src="/metamask.svg" width={30} height={30}/>
-                    </div>
-                  )}
-                </button>
-              </li>
-               
-              </ul>
+                  <li>
+                    <button className="connect-btn" onClick={() => open()}>
+                      {address ? (
+                        address?.substring(0, 5) +
+                        "..." +
+                        address.substring(37, 42)
+                      ) : (
+                        <div className="metamask-c">
+                          <span>Connect Wallet</span>
+                        </div>
+                      )}
+                    </button>
+                  </li>
+                </ul>
+              </div>
             </div>
-          </div>
-        </nav>
-        {/* <div className="information max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+          </nav>
+          {/* <div className="information max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <div className="first-div">
             <h1 className="chain">Polarfi</h1>
             <h1>
@@ -450,7 +486,7 @@ export default function Home() {
           <div className="second-div">
             <div className="raised">
               {/**@ts-ignore */}
-              {/* <h1>{Nameresult?.data}</h1>
+          {/* <h1>{Nameresult?.data}</h1>
 
               <div>
                 <h2>Total Raised</h2>
@@ -466,16 +502,16 @@ export default function Home() {
               <div className="data2">
                 {" "}
                 {/**@ts-ignore */}
-                {/* <h1>{Symbolresult.data}</h1>
+          {/* <h1>{Symbolresult.data}</h1>
                 {/**@ts-ignore */}
-                {/* {targetPrice === null ? (
+          {/* {targetPrice === null ? (
                   <p>Loading...</p>
                 ) : (
                   <h1>{targetPrice}</h1>
                 )}
                 <h1>Public</h1>
-              </div> */} 
-            {/* </div>
+              </div> */}
+          {/* </div>
             <button
               onClick={openModal}
               className="relative button inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
@@ -486,8 +522,8 @@ export default function Home() {
             </button> */}
           {/* </div>
         </div>*/}
-      </main> 
-      {/*{isOpen && (
+        </main>
+        {/*{isOpen && (
         <div className="fixed inset-0 z-50 overflow-auto bg-gray-800 bg-opacity-50 flex justify-center items-center">
           <div
             ref={modalRef}
@@ -525,10 +561,10 @@ export default function Home() {
           </div>
         </div>
       )} */}
-    </div>
+      </div>
       {/* <Page address={address}/> */}
-      
-      <Stacking/>
+
+      <Stacking />
     </>
   );
 }
