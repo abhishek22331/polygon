@@ -407,7 +407,7 @@ console.log(address,"addddddd")
                   <div>
                     <span className="text-xxs sm:text-base">
                       {" "}
-                      Balance: {balance.slice(0, 5)} <span>Matic</span>
+                      Balance: {balance ?balance.slice(0, 5):"--"} <span>Matic</span>
                     </span>
                   </div>
                 </div>
