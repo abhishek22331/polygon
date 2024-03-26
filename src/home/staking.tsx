@@ -364,6 +364,9 @@ console.log(address,"addddddd")
   const buyToken = async () => {
     try {
       if (address) {
+        if(!buydata){
+          return alert("please enter amount")
+        }
         const _amount = getToWei(buydata);
         console.log(_amount, "_amount from buy");
         if (signer) {
@@ -418,7 +421,7 @@ console.log(address,"addddddd")
                     </span>
                     <input
                       onChange={(e) => setBuy(e.target.value)}
-                      type="text"
+                      type="number"
                       name="vstack"
                       placeholder="Enter the amount in FROST"
                       className="form-textbox pad-left pd-r-90"
