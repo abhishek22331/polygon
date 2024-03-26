@@ -365,7 +365,11 @@ console.log(address,"addddddd")
     try {
       if (address) {
         if(!buydata){
-          return alert("please enter amount")
+          return Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Please enter amount",
+          });
         }
         const _amount = getToWei(buydata);
         console.log(_amount, "_amount from buy");
@@ -392,6 +396,44 @@ console.log(address,"addddddd")
       }
     } catch (error) {}
   };
+
+
+  const unStaking=async()=>{
+    try {
+      if(address){
+        if(signer){
+          const contracts = new ethers.Contract(
+            "0xb10C3BE52bC95EF9c347AbEf41d11bDB0546cB28",
+            ABI,
+            signer
+          ); 
+          const tx = await contracts.unstake({
+            gasLimit: "20000000",
+          });
+        }
+      }
+    } catch (error) {
+      
+    }
+  }
+  const cliam_Reward=async()=>{
+    try {
+      if(address){
+        if(signer){
+          const contracts = new ethers.Contract(
+            "0xb10C3BE52bC95EF9c347AbEf41d11bDB0546cB28",
+            ABI,
+            signer
+          ); 
+          const tx = await contracts.claimReward({
+            gasLimit: "20000000",
+          });
+        }
+      }
+    } catch (error) {
+      
+    }
+  }
 
   return (
     <>
@@ -461,6 +503,8 @@ console.log(address,"addddddd")
                 {address ? "Staking" : "Connect Wallet"}
               </button>
             </div>
+            <button  className="btn btn-primary" onClick={()=>(address ? unStaking():open())}>{address ? "Unstaking":"Connect Wallet"}</button>
+            <button  className="btn btn-primary" onClick={()=>(address ? cliam_Reward():open())}>{address ? "Cliam Reward":"Connect Wallet"}</button>
           </div>
         </div>
       </div>
