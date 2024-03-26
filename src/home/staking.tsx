@@ -486,7 +486,7 @@ console.log(address,"addddddd")
                       className="right-c"
                     >
                       0 Matic{" "}
-                      <button disabled className="badge-lt-grey">
+                      <button  onClick={()=>cliam_Reward()}  className="badge-lt-grey">
                         Claim
                       </button>
                     </div>
@@ -504,7 +504,6 @@ console.log(address,"addddddd")
               </button>
             </div>
             <button  className="btn btn-primary" onClick={()=>(address ? unStaking():open())}>{address ? "Unstaking":"Connect Wallet"}</button>
-            <button  className="btn btn-primary" onClick={()=>(address ? cliam_Reward():open())}>{address ? "Cliam Reward":"Connect Wallet"}</button>
           </div>
         </div>
       </div>
