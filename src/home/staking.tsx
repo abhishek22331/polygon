@@ -725,7 +725,7 @@ const Staking = () => {
                 className="btn btn-primary"
                 onClick={() => (address ? buyToken() : open())}
               >
-                {address ? "Staking" : "Connect Wallet"}
+                {address ? "Stake" : "Connect Wallet"}
               </button>
             </div>
             <button
