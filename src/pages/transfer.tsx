@@ -433,11 +433,15 @@ const Transfer = () => {
           </div>
         </div>
       </nav>
-      <div ref={modalRef} className="bg-white rounded-lg p-6 w-full sm:w-96">
+      <div className="center wide">
+        <div className="w-full text-gray">
+          <div className="mx-auto fl-all-g-10">
+            <div className="flex h-full flex-col justify-between ">
+            <div ref={modalRef} className=" rounded-lg p-6 w50 stack-out">
         <h2 className="text-2xl mb-4">Transfer</h2>
         <h2>Tax in MATIC : {transferper?transferper:"--"}</h2>
 
-        <div className="mb-4">
+        <div className="mb-2">
           <input
             type="text"
             value={token}
@@ -445,11 +449,11 @@ const Transfer = () => {
                 transferFun(e)
               }
             placeholder="0.01"
-            className="border border-gray-300 rounded px-4 py-2 w-full"
+            className="form-textbox"
           />
            <br/>
           <input
-            className="border border-gray-300 rounded px-4 py-2 w-full"
+             className="form-textbox"
             placeholder="Enter Receiver Address"
             type="string"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -457,15 +461,21 @@ const Transfer = () => {
           }
           />
         </div>
-
-        <button
+          <div>
+          <button
           onClick={()=>transferToken()}
-          className="text-white px-4 py-2 rounded mr-2"
-          style={{ backgroundColor: "#422647" }}
+          className="btn btn-primary w-auto"
         >
           Continue
         </button>
+          </div>
+       
       </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 };

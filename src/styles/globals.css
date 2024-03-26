@@ -303,9 +303,17 @@ input {
   width: 100%;
   background: #8247e5;
   color: #fff;
-
+  padding: 0.8rem;
   
 }
+.w50
+{
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
 .badge-max
 {
   height: 100% !important;

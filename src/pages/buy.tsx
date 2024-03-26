@@ -433,28 +433,39 @@ const Buy = () => {
           </div>
         </div>
       </nav>
-      <div ref={modalRef} className="bg-white rounded-lg p-6 w-full sm:w-96">
-        <h2 className="text-2xl mb-4">Buy</h2>
-        <h2>Tax in MATIC : {buyper ? buyper : "--"}</h2>
+    
+      <div className="center wide">
+        <div className="w-full text-gray">
+          <div className="mx-auto fl-all-g-10">
+            <div className="flex h-full flex-col justify-between ">
+            <div ref={modalRef} className="w50 stack-out rounded-lg p-6">
+                <h2 className="text-2xl mb-4">Buy</h2>
+                <h2>Tax in MATIC : {buyper ? buyper : "--"}</h2>
 
-        <div className="mb-4">
-          <input
-            type="text"
-            value={token}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => buyFun(e)}
-            placeholder="0.01"
-            className="border border-gray-300 rounded px-4 py-2 w-full"
-          />
+                <div className="mb-2">
+                  <input
+                    type="text"
+                    value={token}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => buyFun(e)}
+                    placeholder="0.01"
+                    className="form-textbox"
+                  />
+                </div>
+                    <div>
+                    <button
+                  onClick={buyToken}
+                  className="btn btn-primary w-auto"
+                >
+                  Buy Token
+                </button>
+                    </div>
+             
+              </div>
+            </div>
+          </div>
         </div>
-
-        <button
-          onClick={buyToken}
-          className="text-white px-4 py-2 rounded mr-2"
-          style={{ backgroundColor: "#422647" }}
-        >
-          Buy Token
-        </button>
       </div>
+
     </div>
   );
 };
