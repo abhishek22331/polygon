@@ -452,34 +452,29 @@ const Sell = () => {
                 <h2 className="text-2xl mb-4 ">Sell</h2>
                 <h2>Tax in MATIC : {sellper ? sellper : "--"}</h2>
                 <div className="mb-2">
-                  
                   <input
-                    type="text"
+                    type="number"
                     value={token}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => sellFun(e)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      sellFun(e)
+                    }
                     placeholder="0.01"
                     className="form-textbox"
                   />
-                 
-               
                 </div>
-                  <div>
-                    
+                <div>
                   <button
-                  onClick={sellToken}
-                  className="btn btn-primary w-auto"
-                  
-                >
-                  Continue
-                </button>
-                  </div>
-          
+                    onClick={sellToken}
+                    className="btn btn-primary w-auto"
+                  >
+                    Continue
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-     
     </div>
   );
 };

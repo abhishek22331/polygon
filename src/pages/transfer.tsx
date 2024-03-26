@@ -10,294 +10,294 @@ import web3 from "web3";
 import { useEthersSigner } from "../../config/ether";
 import { BigNumber, ethers } from "ethers";
 const Transfer = () => {
-    const ABI = [
+  const ABI = [
+    {
+      inputs: [
+        { internalType: "address", name: "_tokenAddress", type: "address" },
+      ],
+      stateMutability: "nonpayable",
+      type: "constructor",
+    },
+    {
+      anonymous: false,
+      inputs: [
         {
-          inputs: [
-            { internalType: "address", name: "_tokenAddress", type: "address" },
-          ],
-          stateMutability: "nonpayable",
-          type: "constructor",
+          indexed: true,
+          internalType: "address",
+          name: "buyer",
+          type: "address",
         },
         {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "buyer",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "TaxAmount",
-              type: "uint256",
-            },
-          ],
-          name: "Buy",
-          type: "event",
+          indexed: false,
+          internalType: "uint256",
+          name: "amount",
+          type: "uint256",
         },
         {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "reward",
-              type: "uint256",
-            },
-          ],
-          name: "RewardPaid",
-          type: "event",
+          indexed: false,
+          internalType: "uint256",
+          name: "TaxAmount",
+          type: "uint256",
+        },
+      ],
+      name: "Buy",
+      type: "event",
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: "address",
+          name: "user",
+          type: "address",
         },
         {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "seller",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "TaxAmount",
-              type: "uint256",
-            },
-          ],
-          name: "Sell",
-          type: "event",
+          indexed: false,
+          internalType: "uint256",
+          name: "reward",
+          type: "uint256",
+        },
+      ],
+      name: "RewardPaid",
+      type: "event",
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: "address",
+          name: "seller",
+          type: "address",
         },
         {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-          ],
-          name: "Staked",
-          type: "event",
+          indexed: false,
+          internalType: "uint256",
+          name: "amount",
+          type: "uint256",
         },
         {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "from",
-              type: "address",
-            },
-            { indexed: true, internalType: "address", name: "to", type: "address" },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "TaxAmount",
-              type: "uint256",
-            },
-          ],
-          name: "Transfer",
-          type: "event",
+          indexed: false,
+          internalType: "uint256",
+          name: "TaxAmount",
+          type: "uint256",
+        },
+      ],
+      name: "Sell",
+      type: "event",
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: "address",
+          name: "user",
+          type: "address",
         },
         {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-          ],
-          name: "Unstaked",
-          type: "event",
+          indexed: false,
+          internalType: "uint256",
+          name: "amount",
+          type: "uint256",
+        },
+      ],
+      name: "Staked",
+      type: "event",
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: "address",
+          name: "from",
+          type: "address",
+        },
+        { indexed: true, internalType: "address", name: "to", type: "address" },
+        {
+          indexed: false,
+          internalType: "uint256",
+          name: "amount",
+          type: "uint256",
         },
         {
-          inputs: [],
-          name: "DAILY_REWARD",
-          outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-          stateMutability: "view",
-          type: "function",
+          indexed: false,
+          internalType: "uint256",
+          name: "TaxAmount",
+          type: "uint256",
+        },
+      ],
+      name: "Transfer",
+      type: "event",
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: "address",
+          name: "user",
+          type: "address",
         },
         {
-          inputs: [],
-          name: "ERC20Instance",
-          outputs: [{ internalType: "contract IERC20", name: "", type: "address" }],
-          stateMutability: "view",
-          type: "function",
+          indexed: false,
+          internalType: "uint256",
+          name: "amount",
+          type: "uint256",
         },
-        {
-          inputs: [],
-          name: "MIN_LOCK_DURATION",
-          outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "REWARD_RATE",
-          outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [{ internalType: "uint256", name: "amount", type: "uint256" }],
-          name: "buy",
-          outputs: [{ internalType: "bool", name: "", type: "bool" }],
-          stateMutability: "payable",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "buyTaxRate",
-          outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "claimReward",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          inputs: [{ internalType: "address", name: "user", type: "address" }],
-          name: "getRewardBalance",
-          outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [{ internalType: "address", name: "user", type: "address" }],
-          name: "getStakeBalance",
-          outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "owner",
-          outputs: [{ internalType: "address", name: "", type: "address" }],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [{ internalType: "address", name: "", type: "address" }],
-          name: "rewards",
-          outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [{ internalType: "uint256", name: "amount", type: "uint256" }],
-          name: "sell",
-          outputs: [{ internalType: "bool", name: "", type: "bool" }],
-          stateMutability: "payable",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "sellTaxRate",
-          outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [{ internalType: "uint256", name: "amount", type: "uint256" }],
-          name: "stake",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          inputs: [{ internalType: "address", name: "", type: "address" }],
-          name: "stakes",
-          outputs: [
-            { internalType: "uint256", name: "amount", type: "uint256" },
-            { internalType: "uint256", name: "startTimestamp", type: "uint256" },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "totalStaked",
-          outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            { internalType: "address", name: "to", type: "address" },
-            { internalType: "uint256", name: "value", type: "uint256" },
-          ],
-          name: "transfer",
-          outputs: [{ internalType: "bool", name: "", type: "bool" }],
-          stateMutability: "payable",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "transferTaxRate",
-          outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "unstake",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-      ];
+      ],
+      name: "Unstaked",
+      type: "event",
+    },
+    {
+      inputs: [],
+      name: "DAILY_REWARD",
+      outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "ERC20Instance",
+      outputs: [{ internalType: "contract IERC20", name: "", type: "address" }],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "MIN_LOCK_DURATION",
+      outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "REWARD_RATE",
+      outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [{ internalType: "uint256", name: "amount", type: "uint256" }],
+      name: "buy",
+      outputs: [{ internalType: "bool", name: "", type: "bool" }],
+      stateMutability: "payable",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "buyTaxRate",
+      outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "claimReward",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [{ internalType: "address", name: "user", type: "address" }],
+      name: "getRewardBalance",
+      outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [{ internalType: "address", name: "user", type: "address" }],
+      name: "getStakeBalance",
+      outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "owner",
+      outputs: [{ internalType: "address", name: "", type: "address" }],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [{ internalType: "address", name: "", type: "address" }],
+      name: "rewards",
+      outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [{ internalType: "uint256", name: "amount", type: "uint256" }],
+      name: "sell",
+      outputs: [{ internalType: "bool", name: "", type: "bool" }],
+      stateMutability: "payable",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "sellTaxRate",
+      outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [{ internalType: "uint256", name: "amount", type: "uint256" }],
+      name: "stake",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [{ internalType: "address", name: "", type: "address" }],
+      name: "stakes",
+      outputs: [
+        { internalType: "uint256", name: "amount", type: "uint256" },
+        { internalType: "uint256", name: "startTimestamp", type: "uint256" },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "totalStaked",
+      outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [
+        { internalType: "address", name: "to", type: "address" },
+        { internalType: "uint256", name: "value", type: "uint256" },
+      ],
+      name: "transfer",
+      outputs: [{ internalType: "bool", name: "", type: "bool" }],
+      stateMutability: "payable",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "transferTaxRate",
+      outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "unstake",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+  ];
   const modalRef = useRef(null);
   const { address } = useAccount();
   const [token, setToken] = useState();
   const [transferper, setTransferper] = useState(0);
   const [transfer, setTransfer] = useState("");
   const signer = useEthersSigner();
-  const [receiverAddress, setReceiverAddress] = useState<string>('');
+  const [receiverAddress, setReceiverAddress] = useState<string>("");
   function calculatePercentages(input: number, calculate: number) {
     const percentage4 = (input * calculate) / 100;
 
@@ -315,37 +315,36 @@ const Transfer = () => {
     console.log(final, "pppp");
     return final;
   };
-  
-  const transferToken=async()=>{
+
+  const transferToken = async () => {
     try {
-      if(address){
-        const _amount=getToWei(transfer);
-        if(signer){
-          console.log(_amount,"this is transfer token1111111111111")
+      if (address) {
+        const _amount = getToWei(transfer);
+        if (signer) {
+          console.log(_amount, "this is transfer token1111111111111");
 
           try {
             const contracts = new ethers.Contract(
               "0xb10C3BE52bC95EF9c347AbEf41d11bDB0546cB28",
               ABI,
               signer
-              );
-              console.log(contracts,"contractscontracts")
-              const tx = await contracts.transfer(receiverAddress,_amount, {
-                value: getToWei(transferper.toString()),
-                gasLimit: "20000000",
-              });
-              console.log(_amount,"this is transfer token")
+            );
+            console.log(contracts, "contractscontracts");
+            const tx = await contracts.transfer(receiverAddress, _amount, {
+              value: getToWei(transferper.toString()),
+              gasLimit: "20000000",
+            });
+            console.log(_amount, "this is transfer token");
           } catch (error) {
-            console.log("error",error)
+            console.log("error", error);
           }
         }
       }
     } catch (error) {
-        console.log("er333333333ror",error)
-      
+      console.log("er333333333ror", error);
     }
-  }
-  console.log(transferper,"transferper")
+  };
+  console.log(transferper, "transferper");
   return (
     <div className="max-w-screen-xl mx-auto p-4">
       <nav className="bg-white border-gray-200 dark:bg-gray-900">
@@ -437,45 +436,43 @@ const Transfer = () => {
         <div className="w-full text-gray">
           <div className="mx-auto fl-all-g-10">
             <div className="flex h-full flex-col justify-between ">
-            <div ref={modalRef} className=" rounded-lg p-6 w50 stack-out">
-        <h2 className="text-2xl mb-4">Transfer</h2>
-        <h2>Tax in MATIC : {transferper?transferper:"--"}</h2>
+              <div ref={modalRef} className=" rounded-lg p-6 w50 stack-out">
+                <h2 className="text-2xl mb-4">Transfer</h2>
+                <h2>Tax in MATIC : {transferper ? transferper : "--"}</h2>
 
-        <div className="mb-2">
-          <input
-            type="text"
-            value={token}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                transferFun(e)
-              }
-            placeholder="0.01"
-            className="form-textbox"
-          />
-           <br/>
-          <input
-             className="form-textbox"
-            placeholder="Enter Receiver Address"
-            type="string"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setReceiverAddress(e.target.value)
-          }
-          />
-        </div>
-          <div>
-          <button
-          onClick={()=>transferToken()}
-          className="btn btn-primary w-auto"
-        >
-          Continue
-        </button>
-          </div>
-       
-      </div>
+                <div className="mb-2">
+                  <input
+                    type="number"
+                    value={token}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      transferFun(e)
+                    }
+                    placeholder="0.01"
+                    className="form-textbox"
+                  />
+                  <br />
+                  <input
+                    className="form-textbox"
+                    placeholder="Enter Receiver Address"
+                    type="string"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setReceiverAddress(e.target.value)
+                    }
+                  />
+                </div>
+                <div>
+                  <button
+                    onClick={() => transferToken()}
+                    className="btn btn-primary w-auto"
+                  >
+                    Continue
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-
     </div>
   );
 };
