@@ -10,7 +10,7 @@ import {
   useWriteContract,
 } from "wagmi";
 import Swal from "sweetalert2";
-const sell = () => {
+const Sell = () => {
   const ABI = [
     {
       inputs: [
@@ -465,19 +465,8 @@ const sell = () => {
           Continue
         </button>
       </div>
-      {/* <div className="fixed inset-0 z-50 overflow-auto bg-gray-800 bg-opacity-50 flex justify-center items-center">
-      
-      </div> */}
-      {/* <button
-        // onClick={openModal}
-        className="relative button inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
-      >
-        <span className="relative px-6 py-3 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-          Buy
-        </span>
-      </button> */}
     </div>
   );
 };
 
-export default sell;
+export default Sell;

@@ -9,7 +9,7 @@ import {
 import web3 from "web3";
 import { useEthersSigner } from "../../config/ether";
 import { BigNumber, ethers } from "ethers";
-const transfer = () => {
+const Transfer = () => {
     const ABI = [
         {
           inputs: [
@@ -470,4 +470,4 @@ const transfer = () => {
   );
 };
 
-export default transfer;
+export default Transfer;
