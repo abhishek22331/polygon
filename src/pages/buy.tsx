@@ -299,6 +299,13 @@ const Buy = () => {
     },
     {
       inputs: [{ internalType: "uint256", name: "amount", type: "uint256" }],
+      name: "addReward",
+      outputs: [{ internalType: "bool", name: "", type: "bool" }],
+      stateMutability: "payable",
+      type: "function",
+    },
+    {
+      inputs: [{ internalType: "uint256", name: "amount", type: "uint256" }],
       name: "buy",
       outputs: [{ internalType: "bool", name: "", type: "bool" }],
       stateMutability: "payable",
@@ -524,6 +531,7 @@ const Buy = () => {
       stateMutability: "nonpayable",
       type: "function",
     },
+    { stateMutability: "payable", type: "receive" },
   ];
   const { open } = useWeb3Modal();
   const modalRef = useRef(null);
@@ -560,7 +568,7 @@ const Buy = () => {
         if (signer) {
           try {
             const contracts = new ethers.Contract(
-              "0xD73924CA3386ff2c7C2F8a7A76AA0Ead4485909d",
+              "0x77166652d46B71F0bb53E89bF7C7F9903DcAfC26",
               ABI,
               signer
             );
@@ -687,7 +695,10 @@ const Buy = () => {
                   />
                 </div>
                 <div>
-                  <button onClick={()=>buyToken()} className="btn btn-primary w-auto">
+                  <button
+                    onClick={() => buyToken()}
+                    className="btn btn-primary w-auto"
+                  >
                     Buy Token
                   </button>
                 </div>
