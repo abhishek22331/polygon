@@ -6,6 +6,7 @@ import {
   useTransactionConfirmations,
   useWriteContract,
 } from "wagmi";
+import { useWeb3Modal } from "@web3modal/wagmi/react";
 import web3 from "web3";
 import { useEthersSigner } from "../../config/ether";
 import { BigNumber, ethers } from "ethers";
@@ -522,6 +523,7 @@ const Transfer = () => {
       type: "function",
     },
   ];
+  const { open } = useWeb3Modal();
   const modalRef = useRef(null);
   const { address } = useAccount();
   const [token, setToken] = useState();

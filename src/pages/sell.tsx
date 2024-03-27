@@ -9,6 +9,7 @@ import {
   useTransactionConfirmations,
   useWriteContract,
 } from "wagmi";
+import { useWeb3Modal } from "@web3modal/wagmi/react";
 import Swal from "sweetalert2";
 const Sell = () => {
   const ABI = [
@@ -523,6 +524,7 @@ const Sell = () => {
       type: "function",
     },
   ];
+  const { open } = useWeb3Modal();
   const modalRef = useRef(null);
   const signer = useEthersSigner();
   const { address } = useAccount();

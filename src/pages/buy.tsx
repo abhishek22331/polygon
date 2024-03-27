@@ -11,6 +11,7 @@ import {
   useWriteContract,
 } from "wagmi";
 import Swal from "sweetalert2";
+import { useWeb3Modal } from "@web3modal/wagmi/react";
 const Buy = () => {
   const ABI = [
     {
@@ -524,6 +525,7 @@ const Buy = () => {
       type: "function",
     },
   ];
+  const { open } = useWeb3Modal();
   const modalRef = useRef(null);
   const signer = useEthersSigner();
 
@@ -685,7 +687,7 @@ const Buy = () => {
                   />
                 </div>
                 <div>
-                  <button onClick={buyToken} className="btn btn-primary w-auto">
+                  <button onClick={()=>buyToken()} className="btn btn-primary w-auto">
                     Buy Token
                   </button>
                 </div>
