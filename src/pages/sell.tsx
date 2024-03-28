@@ -575,7 +575,7 @@ const Sell = () => {
         console.log("Andara ghe kya ???");
         try {
           const contracts = new ethers.Contract(
-            "0x77166652d46B71F0bb53E89bF7C7F9903DcAfC26",
+            "0xfD7c09150fb6724457C80871aF951247355aba1a",
             ABI,
             signer
           );

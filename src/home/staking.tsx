@@ -290,21 +290,6 @@ const Staking = () => {
       type: "event",
     },
     {
-      inputs: [{ internalType: "address", name: "user", type: "address" }],
-      name: "CheckUserDeposit",
-      outputs: [
-        { internalType: "uint256", name: "depositAmount", type: "uint256" },
-        { internalType: "uint256", name: "depositTime", type: "uint256" },
-        { internalType: "uint256", name: "claimedTime", type: "uint256" },
-        { internalType: "uint256", name: "endTime", type: "uint256" },
-        { internalType: "uint256", name: "userIndex", type: "uint256" },
-        { internalType: "uint256", name: "rewards", type: "uint256" },
-        { internalType: "bool", name: "paid", type: "bool" },
-      ],
-      stateMutability: "view",
-      type: "function",
-    },
-    {
       inputs: [],
       name: "ERC20Instance",
       outputs: [{ internalType: "contract IERC20", name: "", type: "address" }],
@@ -520,6 +505,21 @@ const Staking = () => {
       inputs: [],
       name: "transferTaxRate",
       outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [{ internalType: "address", name: "user", type: "address" }],
+      name: "userDeposits",
+      outputs: [
+        { internalType: "uint256", name: "depositAmount", type: "uint256" },
+        { internalType: "uint256", name: "depositTime", type: "uint256" },
+        { internalType: "uint256", name: "claimedTime", type: "uint256" },
+        { internalType: "uint256", name: "endTime", type: "uint256" },
+        { internalType: "uint256", name: "userIndex", type: "uint256" },
+        { internalType: "uint256", name: "rewards", type: "uint256" },
+        { internalType: "bool", name: "paid", type: "bool" },
+      ],
       stateMutability: "view",
       type: "function",
     },
@@ -815,6 +815,7 @@ const Staking = () => {
   } = useWriteContract();
   const [balance, setBalance] = useState<any>("");
   const [buydata, setBuy] = useState("");
+  const [maticPer, setMaticPer] = useState(0);
   const signer = useEthersSigner();
   console.log(address, "addddddd");
   const { open } = useWeb3Modal();
@@ -869,29 +870,39 @@ const Staking = () => {
       content: "<p>rETH&apos;s APR is calculated using a 7 day average</p>",
     },
   ];
-
+  const calculatePercentage = (e: any) => {
+    const finalPerData = (parseInt(e) * 1.5) / 100;
+    setMaticPer(finalPerData);
+  };
+  console.log(maticPer, "maticPer");
+  // useEffect(()=>{
+  //   calculatePercentage()
+  // },[buydata])
   const checkDeposit = useCallback(async () => {
     try {
       if (address && signer) {
         const contracts = new ethers.Contract(
-          "0x33368ef3282F5AbA0FDD6EF3f3259108Da92Fb40",
+          "0xfD7c09150fb6724457C80871aF951247355aba1a",
           ABI,
           signer
         );
-        const checkAllowance = await contracts.CheckUserDeposit(address, {
+        const checkAllowance = await contracts.userDeposits(address, {
           gasLimit: "20000000",
         });
-        console.log(parseInt(checkAllowance.depositAmount._hex), "checkAllowance");
+        console.log(
+          parseInt(checkAllowance.depositAmount._hex),
+          "checkAllowance"
+        );
       }
     } catch (error) {
       console.error("Error in checkDeposit:", error);
     }
-  }, [address, signer]); 
+  }, [address, signer]);
 
   useEffect(() => {
-    const intervalId = setInterval(checkDeposit, 10000);
+    const intervalId = setInterval(checkDeposit, 60000);
 
-    return () => clearInterval(intervalId); 
+    return () => clearInterval(intervalId);
   }, [checkDeposit]);
   const getToWei = (sell: string) => {
     let final = Web3.utils.toWei(sell, "ether");
@@ -916,7 +927,7 @@ const Staking = () => {
             );
             const checkAllowance = await contracts.allowance(
               address,
-              "0x33368ef3282F5AbA0FDD6EF3f3259108Da92Fb40",
+              "0xfD7c09150fb6724457C80871aF951247355aba1a",
               {
                 gasLimit: "20000000",
               }
@@ -926,7 +937,7 @@ const Staking = () => {
             console.log(typeof allowanceData, "checkAllowance");
             if (BigInt(allowanceData) < BigInt(_amount)) {
               const tx = await contracts.increaseAllowance(
-                "0x33368ef3282F5AbA0FDD6EF3f3259108Da92Fb40",
+                "0xfD7c09150fb6724457C80871aF951247355aba1a",
                 _amount,
                 {
                   gasLimit: "20000000",
@@ -961,7 +972,7 @@ const Staking = () => {
         if (signer) {
           try {
             const contracts = new ethers.Contract(
-              "0x33368ef3282F5AbA0FDD6EF3f3259108Da92Fb40",
+              "0xfD7c09150fb6724457C80871aF951247355aba1a",
               ABI,
               signer
             );
@@ -986,7 +997,7 @@ const Staking = () => {
       if (address) {
         if (signer) {
           const contracts = new ethers.Contract(
-            "0x33368ef3282F5AbA0FDD6EF3f3259108Da92Fb40",
+            "0xfD7c09150fb6724457C80871aF951247355aba1a",
             ABI,
             signer
           );
@@ -1002,7 +1013,7 @@ const Staking = () => {
       if (address) {
         if (signer) {
           const contracts = new ethers.Contract(
-            "0x33368ef3282F5AbA0FDD6EF3f3259108Da92Fb40",
+            "0xfD7c09150fb6724457C80871aF951247355aba1a",
             ABI,
             signer
           );
@@ -1018,7 +1029,7 @@ const Staking = () => {
       if (address) {
         if (signer) {
           const contracts = new ethers.Contract(
-            "0x33368ef3282F5AbA0FDD6EF3f3259108Da92Fb40",
+            "0xfD7c09150fb6724457C80871aF951247355aba1a",
             ABI,
             signer
           );
@@ -1057,7 +1068,10 @@ const Staking = () => {
                       <img src="/img/eth-icon.png" alt="eth" />
                     </span>
                     <input
-                      onChange={(e) => setBuy(e.target.value)}
+                      onChange={(e) => (
+                        calculatePercentage(e.target.value),
+                        setBuy(e.target.value)
+                      )}
                       type="number"
                       name="vstack"
                       placeholder="Enter the amount in FROST"
@@ -1076,11 +1090,14 @@ const Staking = () => {
                 <div>
                   <div className="acc-title border-b-none">
                     <strong style={{ flex: 2 }}>Reward Balance</strong>
+                    <p style={{ position: "relative", right: "-87px" }}>
+                      {buydata && "(Can be claimed/withdrawed after 60 second)"}
+                    </p>
                     <div
                       style={{ flex: 1, textAlign: "right" }}
                       className="right-c"
                     >
-                      0 Matic{" "}
+                      {buydata ? maticPer : "0"} Matic{" "}
                       <button
                         onClick={() => cliam_Reward()}
                         className="badge-lt-grey"
