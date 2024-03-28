@@ -6,7 +6,11 @@ import Web3 from "web3";
 import { useEthersSigner } from "../../config/ether";
 import { ethers } from "ethers";
 import Swal from "sweetalert2";
-
+import {
+  useReadContract,
+  useTransactionConfirmations,
+  useWriteContract,
+} from "wagmi";
 const Staking = () => {
   const ABI = [
     {
@@ -286,6 +290,21 @@ const Staking = () => {
       type: "event",
     },
     {
+      inputs: [{ internalType: "address", name: "user", type: "address" }],
+      name: "CheckUserDeposit",
+      outputs: [
+        { internalType: "uint256", name: "depositAmount", type: "uint256" },
+        { internalType: "uint256", name: "depositTime", type: "uint256" },
+        { internalType: "uint256", name: "claimedTime", type: "uint256" },
+        { internalType: "uint256", name: "endTime", type: "uint256" },
+        { internalType: "uint256", name: "userIndex", type: "uint256" },
+        { internalType: "uint256", name: "rewards", type: "uint256" },
+        { internalType: "bool", name: "paid", type: "bool" },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
       inputs: [],
       name: "ERC20Instance",
       outputs: [{ internalType: "contract IERC20", name: "", type: "address" }],
@@ -505,21 +524,6 @@ const Staking = () => {
       type: "function",
     },
     {
-      inputs: [{ internalType: "address", name: "user", type: "address" }],
-      name: "userDeposits",
-      outputs: [
-        { internalType: "uint256", name: "depositAmount", type: "uint256" },
-        { internalType: "uint256", name: "depositTime", type: "uint256" },
-        { internalType: "uint256", name: "claimedTime", type: "uint256" },
-        { internalType: "uint256", name: "endTime", type: "uint256" },
-        { internalType: "uint256", name: "userIndex", type: "uint256" },
-        { internalType: "uint256", name: "rewards", type: "uint256" },
-        { internalType: "bool", name: "paid", type: "bool" },
-      ],
-      stateMutability: "view",
-      type: "function",
-    },
-    {
       inputs: [],
       name: "withdraw",
       outputs: [{ internalType: "bool", name: "", type: "bool" }],
@@ -528,9 +532,287 @@ const Staking = () => {
     },
     { stateMutability: "payable", type: "receive" },
   ];
-
+  const polarFiABI = [
+    {
+      inputs: [],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "constructor",
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: "address",
+          name: "owner",
+          type: "address",
+        },
+        {
+          indexed: true,
+          internalType: "address",
+          name: "spender",
+          type: "address",
+        },
+        {
+          indexed: false,
+          internalType: "uint256",
+          name: "value",
+          type: "uint256",
+        },
+      ],
+      name: "Approval",
+      type: "event",
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: "address",
+          name: "previousOwner",
+          type: "address",
+        },
+        {
+          indexed: true,
+          internalType: "address",
+          name: "newOwner",
+          type: "address",
+        },
+      ],
+      name: "OwnershipTransferred",
+      type: "event",
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: "address",
+          name: "from",
+          type: "address",
+        },
+        { indexed: true, internalType: "address", name: "to", type: "address" },
+        {
+          indexed: false,
+          internalType: "uint256",
+          name: "value",
+          type: "uint256",
+        },
+      ],
+      name: "Transfer",
+      type: "event",
+    },
+    {
+      constant: true,
+      inputs: [],
+      name: "_decimals",
+      outputs: [{ internalType: "uint8", name: "", type: "uint8" }],
+      payable: false,
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      constant: true,
+      inputs: [],
+      name: "_name",
+      outputs: [{ internalType: "string", name: "", type: "string" }],
+      payable: false,
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      constant: true,
+      inputs: [],
+      name: "_symbol",
+      outputs: [{ internalType: "string", name: "", type: "string" }],
+      payable: false,
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      constant: true,
+      inputs: [
+        { internalType: "address", name: "owner", type: "address" },
+        { internalType: "address", name: "spender", type: "address" },
+      ],
+      name: "allowance",
+      outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+      payable: false,
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      constant: false,
+      inputs: [
+        { internalType: "address", name: "spender", type: "address" },
+        { internalType: "uint256", name: "amount", type: "uint256" },
+      ],
+      name: "approve",
+      outputs: [{ internalType: "bool", name: "", type: "bool" }],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      constant: true,
+      inputs: [{ internalType: "address", name: "account", type: "address" }],
+      name: "balanceOf",
+      outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+      payable: false,
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      constant: false,
+      inputs: [{ internalType: "uint256", name: "amount", type: "uint256" }],
+      name: "burn",
+      outputs: [{ internalType: "bool", name: "", type: "bool" }],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      constant: true,
+      inputs: [],
+      name: "decimals",
+      outputs: [{ internalType: "uint8", name: "", type: "uint8" }],
+      payable: false,
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      constant: false,
+      inputs: [
+        { internalType: "address", name: "spender", type: "address" },
+        { internalType: "uint256", name: "subtractedValue", type: "uint256" },
+      ],
+      name: "decreaseAllowance",
+      outputs: [{ internalType: "bool", name: "", type: "bool" }],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      constant: true,
+      inputs: [],
+      name: "getOwner",
+      outputs: [{ internalType: "address", name: "", type: "address" }],
+      payable: false,
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      constant: false,
+      inputs: [
+        { internalType: "address", name: "spender", type: "address" },
+        { internalType: "uint256", name: "addedValue", type: "uint256" },
+      ],
+      name: "increaseAllowance",
+      outputs: [{ internalType: "bool", name: "", type: "bool" }],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      constant: false,
+      inputs: [{ internalType: "uint256", name: "amount", type: "uint256" }],
+      name: "mint",
+      outputs: [{ internalType: "bool", name: "", type: "bool" }],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      constant: true,
+      inputs: [],
+      name: "name",
+      outputs: [{ internalType: "string", name: "", type: "string" }],
+      payable: false,
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      constant: true,
+      inputs: [],
+      name: "owner",
+      outputs: [{ internalType: "address", name: "", type: "address" }],
+      payable: false,
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      constant: false,
+      inputs: [],
+      name: "renounceOwnership",
+      outputs: [],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      constant: true,
+      inputs: [],
+      name: "symbol",
+      outputs: [{ internalType: "string", name: "", type: "string" }],
+      payable: false,
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      constant: true,
+      inputs: [],
+      name: "totalSupply",
+      outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+      payable: false,
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      constant: false,
+      inputs: [
+        { internalType: "address", name: "recipient", type: "address" },
+        { internalType: "uint256", name: "amount", type: "uint256" },
+      ],
+      name: "transfer",
+      outputs: [{ internalType: "bool", name: "", type: "bool" }],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      constant: false,
+      inputs: [
+        { internalType: "address", name: "sender", type: "address" },
+        { internalType: "address", name: "recipient", type: "address" },
+        { internalType: "uint256", name: "amount", type: "uint256" },
+      ],
+      name: "transferFrom",
+      outputs: [{ internalType: "bool", name: "", type: "bool" }],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      constant: false,
+      inputs: [{ internalType: "address", name: "newOwner", type: "address" }],
+      name: "transferOwnership",
+      outputs: [],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+  ];
   const { address } = useAccount();
-
+  const {
+    data: hash,
+    isPending,
+    error,
+    isError,
+    isSuccess,
+    writeContract,
+    writeContractAsync,
+  } = useWriteContract();
   const [balance, setBalance] = useState<any>("");
   const [buydata, setBuy] = useState("");
   const signer = useEthersSigner();
@@ -589,10 +871,58 @@ const Staking = () => {
   ];
   const getToWei = (sell: string) => {
     let final = Web3.utils.toWei(sell, "ether");
+    // Remove the last three zeros
+    //@ts-ignore
+    final = (BigInt(final) / 1000n).toString();
     console.log(final, "pppp");
     return final;
   };
-  const buyToken = async () => {
+  const checkAllowance = async () => {
+    try {
+      if (address) {
+        const _amount = getToWei(buydata);
+        let myBigInt: bigint = BigInt(_amount);
+
+        console.log(typeof _amount, "_amount from buy");
+        if (signer) {
+          try {
+            const contracts = new ethers.Contract(
+              "0xBe51D05297FB603Dc9a39545e9cf21156ca058F2",
+              polarFiABI,
+              signer
+            );
+            const checkAllowance = await contracts.allowance(
+              address,
+              "0x33368ef3282F5AbA0FDD6EF3f3259108Da92Fb40",
+              {
+                gasLimit: "20000000",
+              }
+            );
+            console.log(contracts, "contracts");
+            const allowanceData = checkAllowance._hex;
+            console.log(typeof allowanceData, "checkAllowance");
+            if (BigInt(allowanceData) < BigInt(_amount)) {
+              const tx = await contracts.increaseAllowance(
+                "0x33368ef3282F5AbA0FDD6EF3f3259108Da92Fb40",
+                _amount,
+                {
+                  gasLimit: "20000000",
+                }
+              );
+              console.log("ttttttttttttttttttt");
+            }
+          } catch (error) {}
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Please connect Your wallet",
+          });
+        }
+      }
+    } catch (error) {}
+  };
+  const stake = async () => {
     try {
       if (address) {
         if (!buydata) {
@@ -602,23 +932,20 @@ const Staking = () => {
             text: "Please enter amount",
           });
         }
+        await checkAllowance();
         const _amount = getToWei(buydata);
         console.log(_amount, "_amount from buy");
         if (signer) {
           try {
             const contracts = new ethers.Contract(
-              "0x77166652d46B71F0bb53E89bF7C7F9903DcAfC26",
+              "0x33368ef3282F5AbA0FDD6EF3f3259108Da92Fb40",
               ABI,
               signer
             );
-            console.log(
-              contracts,
-              "contractscontractscontractscontractscontractscontractscontractscontractscontractscontractscontracts"
-            );
+           
             const tx = await contracts.stake(_amount, {
               gasLimit: "20000000",
             });
-            console.log(tx, "tytttttttttttttt");
           } catch (error) {}
         } else {
           Swal.fire({
@@ -636,7 +963,7 @@ const Staking = () => {
       if (address) {
         if (signer) {
           const contracts = new ethers.Contract(
-            "0x77166652d46B71F0bb53E89bF7C7F9903DcAfC26",
+            "0x33368ef3282F5AbA0FDD6EF3f3259108Da92Fb40",
             ABI,
             signer
           );
@@ -652,7 +979,7 @@ const Staking = () => {
       if (address) {
         if (signer) {
           const contracts = new ethers.Contract(
-            "0x77166652d46B71F0bb53E89bF7C7F9903DcAfC26",
+            "0x33368ef3282F5AbA0FDD6EF3f3259108Da92Fb40",
             ABI,
             signer
           );
@@ -663,7 +990,22 @@ const Staking = () => {
       }
     } catch (error) {}
   };
-
+  const withdrawAmount =async () => {
+    try {
+      if (address) {
+        if (signer) {
+          const contracts = new ethers.Contract(
+            "0x33368ef3282F5AbA0FDD6EF3f3259108Da92Fb40",
+            ABI,
+            signer
+          );
+          const tx = await contracts.withdraw({
+            gasLimit: "20000000",
+          });
+        }
+      }
+    } catch (error) {}
+  };
   return (
     <>
       <div className="max-w-screen-xl mx-auto p-4">
@@ -731,7 +1073,7 @@ const Staking = () => {
             <div className="mb-4">
               <button
                 className="btn btn-primary"
-                onClick={() => (address ? buyToken() : open())}
+                onClick={() => (address ? stake() : open())}
               >
                 {address ? "Stake" : "Connect Wallet"}
               </button>
@@ -740,8 +1082,15 @@ const Staking = () => {
               className="btn btn-primary"
               onClick={() => (address ? ReStaking() : open())}
             >
-              {address ? "Restake" : "Connect Wallet"}
+              {address ? "Unstake" : "Connect Wallet"}
             </button>
+            {address && <button
+              className="btn btn-primary"
+              onClick={() => withdrawAmount() }
+            >
+              {address ? "Withdraw" : "Connect Wallet"}
+            </button> }
+            
           </div>
         </div>
       </div>
