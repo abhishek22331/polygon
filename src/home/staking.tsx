@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Accordion from "./Accordion";
 import { useAccount } from "wagmi";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
@@ -869,9 +869,32 @@ const Staking = () => {
       content: "<p>rETH&apos;s APR is calculated using a 7 day average</p>",
     },
   ];
+
+  const checkDeposit = useCallback(async () => {
+    try {
+      if (address && signer) {
+        const contracts = new ethers.Contract(
+          "0x33368ef3282F5AbA0FDD6EF3f3259108Da92Fb40",
+          ABI,
+          signer
+        );
+        const checkAllowance = await contracts.CheckUserDeposit(address, {
+          gasLimit: "20000000",
+        });
+        console.log(parseInt(checkAllowance.depositAmount._hex), "checkAllowance");
+      }
+    } catch (error) {
+      console.error("Error in checkDeposit:", error);
+    }
+  }, [address, signer]); 
+
+  useEffect(() => {
+    const intervalId = setInterval(checkDeposit, 10000);
+
+    return () => clearInterval(intervalId); 
+  }, [checkDeposit]);
   const getToWei = (sell: string) => {
     let final = Web3.utils.toWei(sell, "ether");
-    // Remove the last three zeros
     //@ts-ignore
     final = (BigInt(final) / 1000n).toString();
     console.log(final, "pppp");
@@ -942,7 +965,7 @@ const Staking = () => {
               ABI,
               signer
             );
-           
+
             const tx = await contracts.stake(_amount, {
               gasLimit: "20000000",
             });
@@ -990,7 +1013,7 @@ const Staking = () => {
       }
     } catch (error) {}
   };
-  const withdrawAmount =async () => {
+  const withdrawAmount = async () => {
     try {
       if (address) {
         if (signer) {
@@ -1084,13 +1107,14 @@ const Staking = () => {
             >
               {address ? "Unstake" : "Connect Wallet"}
             </button>
-            {address && <button
-              className="btn btn-primary"
-              onClick={() => withdrawAmount() }
-            >
-              {address ? "Withdraw" : "Connect Wallet"}
-            </button> }
-            
+            {address && (
+              <button
+                className="btn btn-primary"
+                onClick={() => withdrawAmount()}
+              >
+                {address ? "Withdraw" : "Connect Wallet"}
+              </button>
+            )}
           </div>
         </div>
       </div>
