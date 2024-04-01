@@ -882,7 +882,7 @@ const Staking = () => {
     try {
       if (address && signer) {
         const contracts = new ethers.Contract(
-          "0xfD7c09150fb6724457C80871aF951247355aba1a",
+          "0x236a1CB84E7de45dff7190EaB961ACc14a3e40A7",
           ABI,
           signer
         );
@@ -907,7 +907,7 @@ const Staking = () => {
   const getToWei = (sell: string) => {
     let final = Web3.utils.toWei(sell, "ether");
     //@ts-ignore
-    final = (BigInt(final) / 1000n).toString();
+    final = BigInt(final) .toString();
     console.log(final, "pppp");
     return final;
   };
@@ -927,7 +927,7 @@ const Staking = () => {
             );
             const checkAllowance = await contracts.allowance(
               address,
-              "0xfD7c09150fb6724457C80871aF951247355aba1a",
+              "0x236a1CB84E7de45dff7190EaB961ACc14a3e40A7",
               {
                 gasLimit: "20000000",
               }
@@ -937,7 +937,7 @@ const Staking = () => {
             console.log(typeof allowanceData, "checkAllowance");
             if (BigInt(allowanceData) < BigInt(_amount)) {
               const tx = await contracts.increaseAllowance(
-                "0xfD7c09150fb6724457C80871aF951247355aba1a",
+                "0x236a1CB84E7de45dff7190EaB961ACc14a3e40A7",
                 _amount,
                 {
                   gasLimit: "20000000",
@@ -972,7 +972,7 @@ const Staking = () => {
         if (signer) {
           try {
             const contracts = new ethers.Contract(
-              "0xfD7c09150fb6724457C80871aF951247355aba1a",
+              "0x236a1CB84E7de45dff7190EaB961ACc14a3e40A7",
               ABI,
               signer
             );
@@ -997,7 +997,7 @@ const Staking = () => {
       if (address) {
         if (signer) {
           const contracts = new ethers.Contract(
-            "0xfD7c09150fb6724457C80871aF951247355aba1a",
+            "0x236a1CB84E7de45dff7190EaB961ACc14a3e40A7",
             ABI,
             signer
           );
@@ -1013,7 +1013,7 @@ const Staking = () => {
       if (address) {
         if (signer) {
           const contracts = new ethers.Contract(
-            "0xfD7c09150fb6724457C80871aF951247355aba1a",
+            "0x236a1CB84E7de45dff7190EaB961ACc14a3e40A7",
             ABI,
             signer
           );
@@ -1029,7 +1029,7 @@ const Staking = () => {
       if (address) {
         if (signer) {
           const contracts = new ethers.Contract(
-            "0xfD7c09150fb6724457C80871aF951247355aba1a",
+            "0x236a1CB84E7de45dff7190EaB961ACc14a3e40A7",
             ABI,
             signer
           );
@@ -1122,7 +1122,7 @@ const Staking = () => {
               className="btn btn-primary"
               onClick={() => (address ? ReStaking() : open())}
             >
-              {address ? "Unstake" : "Connect Wallet"}
+              {address ? "Restake" : "Connect Wallet"}
             </button>
             {address && (
               <button
