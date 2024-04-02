@@ -1091,7 +1091,7 @@ const Staking = () => {
                   <div className="acc-title border-b-none">
                     <strong style={{ flex: 2 }}>Reward Balance</strong>
                     <p style={{ position: "relative", right: "-87px" }}>
-                      {buydata && "(Can be claimed/withdrawed after 60 second)"}
+                      {buydata && "(Can be claimed/withdrawn after 60 second)"}
                     </p>
                     <div
                       style={{ flex: 1, textAlign: "right" }}
